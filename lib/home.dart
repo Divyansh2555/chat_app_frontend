@@ -26,6 +26,7 @@ class HomePage extends StatefulWidget {
 
 
 
+
 class _HomePageState extends State<HomePage> {
 
 
@@ -44,16 +45,25 @@ class _HomePageState extends State<HomePage> {
 
 
 
+
+
   List<Widget> get pages => [
 
 
-    const ChatPage(),
+    ChatPage(
+
+      currentUserId: widget.userId,
+
+    ),
+
 
 
     const StatusPage(),
 
 
+
     const CallsPage(),
+
 
 
     ProfilePage(
@@ -63,11 +73,17 @@ class _HomePageState extends State<HomePage> {
     ),
 
 
+
   ];
 
 
 
+
+
+
+
   void changePage(int index){
+
 
     setState(() {
 
@@ -75,7 +91,9 @@ class _HomePageState extends State<HomePage> {
 
     });
 
+
   }
+
 
 
 
@@ -90,87 +108,156 @@ class _HomePageState extends State<HomePage> {
 
       appBar: AppBar(
 
-        title: Text(
+
+        title:
+
+        Text(
+
           titles[selectedIndex],
+
         ),
 
-        centerTitle: true,
+
+        centerTitle:true,
+
 
       ),
 
 
 
-      body: pages[selectedIndex],
+
+
+      body:
+
+      pages[selectedIndex],
 
 
 
-      bottomNavigationBar: BottomNavigationBar(
 
 
-        currentIndex: selectedIndex,
+      bottomNavigationBar:
 
-
-        type: BottomNavigationBarType.fixed,
-
-
-        selectedItemColor: Colors.green,
-
-
-        unselectedItemColor: Colors.grey,
-
-
-        onTap: changePage,
-
-
-        items: const [
-
-
-          BottomNavigationBarItem(
-
-            icon: Icon(Icons.chat),
-
-            label: "Chats",
-
-          ),
+      BottomNavigationBar(
 
 
 
-          BottomNavigationBarItem(
-
-            icon: Icon(Icons.circle_outlined),
-
-            label: "Status",
-
-          ),
+        currentIndex:selectedIndex,
 
 
 
-          BottomNavigationBarItem(
+        type:
 
-            icon: Icon(Icons.call),
+        BottomNavigationBarType.fixed,
 
-            label: "Calls",
 
-          ),
+
+        selectedItemColor:
+
+        Colors.green,
+
+
+
+        unselectedItemColor:
+
+        Colors.grey,
+
+
+
+        onTap:
+
+        changePage,
+
+
+
+
+        items:const [
+
 
 
 
           BottomNavigationBarItem(
 
-            icon: Icon(Icons.person),
 
-            label: "Profile",
+            icon:
+
+            Icon(Icons.chat),
+
+
+            label:"Chats",
+
 
           ),
+
+
+
+
+
+
+          BottomNavigationBarItem(
+
+
+            icon:
+
+            Icon(Icons.circle_outlined),
+
+
+            label:"Status",
+
+
+          ),
+
+
+
+
+
+
+          BottomNavigationBarItem(
+
+
+            icon:
+
+            Icon(Icons.call),
+
+
+            label:"Calls",
+
+
+          ),
+
+
+
+
+
+
+          BottomNavigationBarItem(
+
+
+            icon:
+
+            Icon(Icons.person),
+
+
+            label:"Profile",
+
+
+          ),
+
+
+
 
 
         ],
 
+
+
       ),
+
 
 
     );
 
+
   }
+
 
 }
