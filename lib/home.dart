@@ -6,9 +6,12 @@ import 'package:chatapp/screen/calls_page.dart';
 import 'package:chatapp/screen/profile_page.dart';
 
 
+
 class HomePage extends StatefulWidget {
 
+
   final int userId;
+
 
   const HomePage({
 
@@ -19,10 +22,13 @@ class HomePage extends StatefulWidget {
   });
 
 
+
   @override
   State<HomePage> createState() => _HomePageState();
 
+
 }
+
 
 
 
@@ -30,18 +36,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
 
 
+
   int selectedIndex = 0;
-
-
-
-  final List<String> titles = [
-
-    "Chats",
-    "Status",
-    "Calls",
-    "Profile",
-
-  ];
 
 
 
@@ -82,12 +78,15 @@ class _HomePageState extends State<HomePage> {
 
 
 
+
   void changePage(int index){
 
 
     setState(() {
 
+
       selectedIndex = index;
+
 
     });
 
@@ -99,31 +98,12 @@ class _HomePageState extends State<HomePage> {
 
 
 
+
   @override
   Widget build(BuildContext context) {
 
 
     return Scaffold(
-
-
-      appBar: AppBar(
-
-
-        title:
-
-        Text(
-
-          titles[selectedIndex],
-
-        ),
-
-
-        centerTitle:true,
-
-
-      ),
-
-
 
 
 
@@ -141,7 +121,10 @@ class _HomePageState extends State<HomePage> {
 
 
 
-        currentIndex:selectedIndex,
+        currentIndex:
+
+        selectedIndex,
+
 
 
 
@@ -151,15 +134,21 @@ class _HomePageState extends State<HomePage> {
 
 
 
+
+
         selectedItemColor:
 
         Colors.green,
 
 
 
+
+
         unselectedItemColor:
 
         Colors.grey,
+
+
 
 
 
@@ -170,7 +159,10 @@ class _HomePageState extends State<HomePage> {
 
 
 
-        items:const [
+
+        items:
+
+        const [
 
 
 
@@ -183,7 +175,9 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.chat),
 
 
-            label:"Chats",
+            label:
+
+            "Chats",
 
 
           ),
@@ -201,7 +195,9 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.circle_outlined),
 
 
-            label:"Status",
+            label:
+
+            "Status",
 
 
           ),
@@ -219,7 +215,9 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.call),
 
 
-            label:"Calls",
+            label:
+
+            "Calls",
 
 
           ),
@@ -237,11 +235,12 @@ class _HomePageState extends State<HomePage> {
             Icon(Icons.person),
 
 
-            label:"Profile",
+            label:
+
+            "Profile",
 
 
           ),
-
 
 
 

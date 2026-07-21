@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/api/services/auth_service.dart';
 import 'home.dart';
@@ -29,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController emailController =
   TextEditingController();
+
 
   final TextEditingController passwordController =
   TextEditingController();
@@ -74,11 +76,9 @@ class _LoginPageState extends State<LoginPage> {
 
       final response = await _authService.login({
 
-
         "email": emailController.text.trim(),
 
         "password": passwordController.text.trim(),
-
 
       });
 
@@ -96,16 +96,34 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
-
       if(response.statusCode == 200){
-
 
 
         final data = jsonDecode(response.body);
 
 
-
         final user = data["user"];
+
+
+
+        // SAVE LOGIN DATA
+
+        final prefs =
+        await SharedPreferences.getInstance();
+
+
+
+        await prefs.setBool(
+          "isLogin",
+          true,
+        );
+
+
+
+        await prefs.setInt(
+          "userId",
+          user["id"],
+        );
 
 
 
@@ -137,13 +155,16 @@ class _LoginPageState extends State<LoginPage> {
 
         try{
 
+
           final error = jsonDecode(response.body);
+
 
           message = error["detail"] ?? message;
 
 
-        }catch(_){}
+        }
 
+        catch(_){}
 
 
 
@@ -195,7 +216,6 @@ class _LoginPageState extends State<LoginPage> {
 
 
     }
-
 
 
   }
@@ -308,9 +328,7 @@ class _LoginPageState extends State<LoginPage> {
 
               SizedBox(
 
-
                 width:double.infinity,
-
 
                 height:50,
 
@@ -351,6 +369,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                   ),
+
 
                 ),
 

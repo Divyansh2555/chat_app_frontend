@@ -9,13 +9,9 @@ class MessagePage extends StatefulWidget {
 
 
   final int chatId;
-
   final int senderId;
-
   final int receiverId;
-
   final String username;
-
   final String? profileImage;
 
 
@@ -31,19 +27,15 @@ class MessagePage extends StatefulWidget {
     required this.receiverId,
 
     required this.username,
+
     required this.profileImage,
-
-
 
   });
 
 
 
   @override
-  State<MessagePage> createState()
-  => _MessagePageState();
-
-
+  State<MessagePage> createState() => _MessagePageState();
 
 }
 
@@ -53,7 +45,7 @@ class MessagePage extends StatefulWidget {
 
 
 
-class _MessagePageState extends State<MessagePage> {
+class _MessagePageState extends State<MessagePage>{
 
 
 
@@ -62,7 +54,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-  final messageController =
+  final TextEditingController messageController =
   TextEditingController();
 
 
@@ -72,13 +64,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-  List messages = [];
-
-
-
-
-
-
+  List messages=[];
 
 
 
@@ -98,75 +84,51 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-  Future<void> getMessages() async {
-
+  Future<void> getMessages() async{
 
 
     try{
 
 
-
       final response = await http.get(
-
 
 
         Uri.parse(
 
-          "$baseUrl/messages/${widget.chatId}/",
+            "$baseUrl/messages/${widget.chatId}/${widget.senderId}"
 
         ),
-
-
 
       );
 
 
 
 
-
-      if(response.statusCode == 200){
-
+      if(response.statusCode==200){
 
 
-        setState(() {
+        setState((){
 
 
-
-          messages =
-
-              jsonDecode(response.body);
-
+          messages=jsonDecode(response.body);
 
 
         });
 
 
 
-
-
         scrollBottom();
-
 
 
       }
 
 
-
-
-
     }
-
     catch(e){
-
-
 
       print(e);
 
-
-
     }
-
 
 
   }
@@ -182,53 +144,37 @@ class _MessagePageState extends State<MessagePage> {
   void scrollBottom(){
 
 
-
     Future.delayed(
 
-      const Duration(milliseconds:300),
+        const Duration(milliseconds:300),
+
+            (){
 
 
-
-          (){
-
+          if(scrollController.hasClients){
 
 
-        if(scrollController.hasClients){
+            scrollController.animateTo(
 
 
+              0,
 
-          scrollController.animateTo(
+              duration:
+              const Duration(milliseconds:300),
 
-
-
-            0,
-
-
-
-            duration:
-
-            const Duration(milliseconds:300),
+              curve:
+              Curves.easeOut,
 
 
-
-            curve:
-
-            Curves.easeOut,
+            );
 
 
-
-          );
-
+          }
 
 
         }
 
-
-
-      },
-
     );
-
 
 
   }
@@ -241,15 +187,69 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-  Future<void> sendMessage() async {
+  String timeFormat(String time){
 
+
+    try{
+
+
+      DateTime date =
+      DateTime.parse(time).toLocal();
+
+
+
+      int hour=date.hour;
+
+
+      String ampm =
+      hour>=12 ? "PM":"AM";
+
+
+
+      hour =
+          hour%12;
+
+
+
+      if(hour==0){
+
+        hour=12;
+
+      }
+
+
+
+      String min =
+      date.minute.toString().padLeft(2,"0");
+
+
+
+      return "$hour:$min $ampm";
+
+
+    }
+
+    catch(e){
+
+      return "";
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+  Future<void> sendMessage() async{
 
 
     String text =
-
     messageController.text.trim();
-
-
 
 
 
@@ -263,119 +263,70 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
+    final response =
+    await http.post(
 
 
-    try{
 
+      Uri.parse(
 
+          "$baseUrl/messages/"
 
+      ),
 
 
-      final response = await http.post(
 
+      headers:{
 
 
+        "Content-Type":
+        "application/json"
 
-        Uri.parse(
+      },
 
-          "$baseUrl/messages/",
 
-        ),
 
+      body:jsonEncode({
 
 
 
-        headers:{
+        "chat_id":
+        widget.chatId,
 
 
 
-          "Content-Type":
+        "sender_id":
+        widget.senderId,
 
-          "application/json"
 
 
+        "message":
+        text,
 
-        },
 
 
+      }),
 
 
 
-        body:
+    );
 
-        jsonEncode({
 
 
 
-          "chat_id":
 
-          widget.chatId,
 
+    if(response.statusCode==200 ||
+        response.statusCode==201){
 
 
+      messageController.clear();
 
 
-          "sender_id":
-
-          widget.senderId,
-
-
-
-
-
-          "message":
-
-          text,
-
-
-
-        }),
-
-
-
-
-      );
-
-
-
-
-
-
-
-      if(response.statusCode == 200 ||
-
-          response.statusCode == 201){
-
-
-
-        messageController.clear();
-
-
-
-        await getMessages();
-
-
-
-      }
-
-
-
-
-
+      getMessages();
 
 
     }
-
-    catch(e){
-
-
-
-      print(e);
-
-
-
-    }
-
 
 
 
@@ -393,42 +344,26 @@ class _MessagePageState extends State<MessagePage> {
   Widget build(BuildContext context){
 
 
-
     return Scaffold(
 
 
 
-
-
       backgroundColor:
-
       const Color(0xffefeae2),
 
 
 
 
-
-
-
-      appBar:
-
-      AppBar(
+      appBar:AppBar(
 
 
 
         backgroundColor:
-
         Colors.green.shade700,
 
 
 
-        titleSpacing:0,
-
-
-
-        title:
-
-        Row(
+        title:Row(
 
 
 
@@ -440,85 +375,72 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-              backgroundColor:
+              radius:20,
 
-              Colors.white,
+
+
+              backgroundImage:
+
+              widget.profileImage!=null &&
+                  widget.profileImage!.isNotEmpty
+
+
+                  ?
+
+              NetworkImage(
+
+                  "$baseUrl/${widget.profileImage}"
+
+              )
+
+
+                  :
+
+              null,
 
 
 
               child:
 
+              widget.profileImage==null ||
+                  widget.profileImage!.isEmpty
+
+
+                  ?
+
               Text(
 
+                  widget.username[0]
+                      .toUpperCase()
+
+              )
 
 
-                widget.username[0]
+                  :
 
-                    .toUpperCase(),
-
-
-
-                style:
-
-                const TextStyle(
-
-                  color:Colors.green,
-
-                  fontWeight:
-
-                  FontWeight.bold,
-
-                ),
-
-
-
-              ),
-
+              null,
 
 
             ),
-
 
 
 
 
             const SizedBox(
-
               width:10,
-
             ),
-
-
-
 
 
 
             Text(
 
-
-
-              widget.username,
-
-
-
-              style:
-
-              const TextStyle(
-
-                fontSize:18,
-
-              ),
-
-
+                widget.username
 
             )
 
 
 
-
-
           ],
-
 
 
         ),
@@ -532,10 +454,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-      body:
-
-      Column(
+      body:Column(
 
 
 
@@ -545,278 +464,157 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
           Expanded(
 
 
 
-            child:
+              child:ListView.builder(
 
-            ListView.builder(
 
 
+                reverse:true,
 
-              controller:
 
-              scrollController,
 
+                controller:
+                scrollController,
 
 
 
+                padding:
+                const EdgeInsets.all(10),
 
-              reverse:
 
-              true,
 
+                itemCount:
+                messages.length,
 
 
 
+                itemBuilder:(context,index){
 
-              padding:
 
-              const EdgeInsets.all(10),
 
+                  final msg =
 
+                  messages[
+                  messages.length-1-index
+                  ];
 
 
 
+                  bool isMe =
 
-              itemCount:
+                      msg["sender_id"] ==
+                          widget.senderId;
 
-              messages.length,
 
 
 
 
+                  return Align(
 
 
 
+                    alignment:
 
-              itemBuilder:
 
-                  (context,index){
 
+                    isMe
 
+                        ?
 
-                final msg =
+                    Alignment.centerRight
 
+                        :
 
+                    Alignment.centerLeft,
 
-                messages[messages.length - 1 - index];
 
 
 
 
 
+                    child:Container(
 
 
-                bool isMe =
 
+                      margin:
 
+                      const EdgeInsets.only(
+                          bottom:8
+                      ),
 
-                    msg["sender_id"]
 
-                        ==
 
-                        widget.senderId;
 
+                      padding:
 
+                      const EdgeInsets.all(10),
 
 
 
 
 
-                return Align(
+                      constraints:
 
+                      BoxConstraints(
 
+                        maxWidth:
 
+                        MediaQuery.of(context)
+                            .size
+                            .width*
+                            .75,
 
-                  alignment:
+                      ),
 
 
 
-                  isMe
 
 
+                      decoration:
 
-                      ?
-
-                  Alignment.centerRight
-
-
-
-                      :
-
-
-
-                  Alignment.centerLeft,
-
-
-
-
-
-
-
-                  child:
-
-                  Container(
-
-
-
-
-                    margin:
-
-                    const EdgeInsets.only(
-
-                      bottom:8,
-
-                    ),
-
-
-
-
-
-
-
-                    padding:
-
-                    const EdgeInsets.symmetric(
-
-
-
-                      horizontal:14,
-
-                      vertical:10,
-
-
-
-                    ),
-
-
-
-
-
-
-                    constraints:
-
-                    BoxConstraints(
-
-
-
-                      maxWidth:
-
-                      MediaQuery.of(context)
-
-                          .size
-
-                          .width*
-
-                          0.75,
-
-
-
-                    ),
-
-
-
-
-
-
-
-                    decoration:
-
-                    BoxDecoration(
-
-
-
-                      color:
-
-
-
-                      isMe
-
-
-
-                          ?
-
-                      Colors.green
-
-
-
-                          :
-
-
-
-                      Colors.white,
-
-
-
-
-
-
-
-
-                      borderRadius:
-
-                      BorderRadius.circular(18),
-
-
-
-                    ),
-
-
-
-
-
-
-
-
-                    child:
-
-                    Text(
-
-
-
-                      msg["message"]
-
-                          .toString(),
-
-
-
-
-
-                      style:
-
-                      TextStyle(
+                      BoxDecoration(
 
 
 
                         color:
 
-
-
                         isMe
-
-
 
                             ?
 
-                        Colors.white
 
+                        (
+
+                            msg["is_read"]==true
+
+
+                                ?
+
+                            Colors.blue
+
+
+                                :
+
+                            Colors.green
+
+                        )
 
 
                             :
 
 
-
-                        Colors.black,
-
+                        Colors.white,
 
 
 
 
-                        fontSize:16,
 
+                        borderRadius:
+
+                        BorderRadius.circular(15),
 
 
                       ),
@@ -824,41 +622,184 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
+
+                      child:Column(
+
+
+
+                        crossAxisAlignment:
+
+                        CrossAxisAlignment.end,
+
+
+
+                        children:[
+
+
+
+
+
+                          Text(
+
+
+
+                            msg["message"]
+                                .toString(),
+
+
+
+                            style:
+
+                            TextStyle(
+
+
+
+                              fontSize:16,
+
+
+                              color:
+
+
+                              isMe
+
+                                  ?
+
+                              Colors.white
+
+                                  :
+
+                              Colors.black,
+
+
+                            ),
+
+
+
+                          ),
+
+
+
+
+
+                          const SizedBox(
+                            height:5,
+                          ),
+
+
+
+
+
+                          Row(
+
+
+
+                            mainAxisSize:
+                            MainAxisSize.min,
+
+
+
+                            children:[
+
+
+
+                              Text(
+
+
+
+                                timeFormat(
+
+                                    msg["created_at"]
+
+                                ),
+
+
+
+                                style:
+
+                                const TextStyle(
+
+                                  fontSize:11,
+
+                                  color:
+                                  Colors.white70,
+
+                                ),
+
+
+
+                              ),
+
+
+
+
+                              if(isMe)
+
+                                const SizedBox(
+                                  width:5,
+                                ),
+
+
+
+
+
+                              if(isMe)
+
+                                Icon(
+
+
+
+                                  Icons.done_all,
+
+
+
+                                  size:15,
+
+
+
+                                  color:
+
+                                  Colors.white,
+
+
+
+                                )
+
+
+
+                            ],
+
+
+
+                          )
+
+
+
+
+
+                        ],
+
+
+
+                      ),
+
+
+
                     ),
 
 
 
+                  );
 
 
 
-                  ),
+                },
 
 
 
-
-
-                );
-
-
-
-
-
-              },
-
-
-
-
-
-            ),
-
+              )
 
 
           ),
-
-
-
-
-
 
 
 
@@ -871,24 +812,16 @@ class _MessagePageState extends State<MessagePage> {
 
 
             padding:
-
             const EdgeInsets.all(8),
 
 
 
-
             color:
-
             Colors.white,
 
 
 
-
-
-
-            child:
-
-            Row(
+            child:Row(
 
 
 
@@ -898,23 +831,16 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-
                 Expanded(
 
 
 
-                  child:
-
-                  TextField(
+                  child:TextField(
 
 
 
                     controller:
-
                     messageController,
-
-
 
 
 
@@ -924,14 +850,8 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-
                       hintText:
-
                       "Message",
-
-
-
 
 
 
@@ -939,14 +859,8 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-
                       fillColor:
-
                       Colors.grey.shade200,
-
-
-
 
 
 
@@ -962,9 +876,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
                         borderSide:
-
                         BorderSide.none,
 
 
@@ -973,10 +885,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
                     ),
-
-
 
 
 
@@ -984,21 +893,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
                 ),
-
-
-
-
-
-
-
-                const SizedBox(
-
-                  width:5,
-
-                ),
-
 
 
 
@@ -1010,15 +905,11 @@ class _MessagePageState extends State<MessagePage> {
 
 
                   backgroundColor:
-
                   Colors.green,
 
 
 
-
-                  child:
-
-                  IconButton(
+                  child:IconButton(
 
 
 
@@ -1026,21 +917,11 @@ class _MessagePageState extends State<MessagePage> {
 
                     const Icon(
 
-
-
                       Icons.send,
 
-
-
-                      color:
-
-                      Colors.white,
-
-
+                      color:Colors.white,
 
                     ),
-
-
 
 
 
@@ -1054,10 +935,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
                 )
-
-
 
 
 
@@ -1067,9 +945,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
             ),
-
 
 
 
@@ -1079,10 +955,7 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-
         ],
-
 
 
 
@@ -1090,15 +963,9 @@ class _MessagePageState extends State<MessagePage> {
 
 
 
-
-
     );
 
-
-
-
   }
-
 
 
 
@@ -1111,21 +978,15 @@ class _MessagePageState extends State<MessagePage> {
   void dispose(){
 
 
-
     messageController.dispose();
 
-
-
     scrollController.dispose();
-
 
 
     super.dispose();
 
 
-
   }
-
 
 
 }
