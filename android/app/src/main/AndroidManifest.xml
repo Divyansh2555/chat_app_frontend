@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Internet Access -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Photo Permission -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
@@ -10,11 +12,13 @@
 
     <application
 
-        android:label="chatapp"
+        android:label="MyChat"
 
         android:name="${applicationName}"
 
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+
+        android:usesCleartextTraffic="true">
 
 
         <activity
@@ -55,8 +59,7 @@
         </activity>
 
 
-        <!-- Flutter Plugin Registration -->
-
+        <!-- Flutter Engine -->
         <meta-data
 
             android:name="flutterEmbedding"
@@ -67,6 +70,7 @@
     </application>
 
 
+    <!-- Text Processing Query -->
     <queries>
 
         <intent>
@@ -76,7 +80,6 @@
             <data android:mimeType="text/plain"/>
 
         </intent>
-
 
     </queries>
 

@@ -1,7 +1,12 @@
 class ApiConstants {
-  // Android Emulator
-  static const String baseUrl = "http://10.56.28.43:8000";
+  // Android Emulator (same PC par FastAPI local run ho raha ho)
+  static const String emulatorUrl = "http://10.0.2.2:8000";
 
-// If using a physical device:
-// static const String baseUrl = "http://192.168.1.100:8000";
+  // Physical phone + same WiFi par FastAPI local run ho raha ho
+  static const String wifiUrl = "http://192.168.1.100:8000";
+
+  // Render deployed API
+  static const String productionUrl = "https://mychatapp-d6wg.onrender.com";
+
+  static const String baseUrl = productionUrl;
 }

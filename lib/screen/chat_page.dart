@@ -26,8 +26,10 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage>{
 
 
+
+
   final String baseUrl =
-      "http://10.56.28.43:8000";
+      "https://mychatapp-d6wg.onrender.com";
 
 
   final searchController =
@@ -412,7 +414,7 @@ class _ChatPageState extends State<ChatPage>{
 
         title:
         const Text(
-            "WhatsApp"
+            " Message",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.blueAccent),
         ),
 
       ),
@@ -465,7 +467,9 @@ class _ChatPageState extends State<ChatPage>{
 
 
                 border:
-                const OutlineInputBorder(),
+                const OutlineInputBorder(
+
+                ),
 
 
               ),

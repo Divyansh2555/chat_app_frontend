@@ -37,9 +37,8 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
 
-
   final String baseUrl =
-      "http://10.56.28.43:8000";
+      "https://mychatapp-d6wg.onrender.com";
 
 
 
